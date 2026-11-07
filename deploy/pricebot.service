@@ -1,0 +1,25 @@
+[Unit]
+Description=Price Alert Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pricebot
+Group=pricebot
+# DB_PATH and CALLER_SESSION_PATH are relative (data/...), so the working directory matters.
+WorkingDirectory=/opt/pricebot
+ExecStart=/opt/pricebot/.venv/bin/python -m pricebot
+Restart=always
+RestartSec=10
+# Logs go to the journal: journalctl -u pricebot -f
+Environment=PYTHONUNBUFFERED=1
+
+# Hardening: the bot only needs to write to data/
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/pricebot/data
+
+[Install]
+WantedBy=multi-user.target
